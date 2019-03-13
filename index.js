@@ -8,7 +8,11 @@ const { get } = require('./helpers/api');
 const tokenRoute = require('./routes/token');
 const uploadRoute = require('./routes/upload');
 
-const { PORT } = process.env;
+const { PORT, UPLOAD_TARGET } = process.env;
+
+if (!UPLOAD_TARGET) {
+  throw new Error('UPLOAD_TARGET is not defined in .env.');
+}
 
 const app = express();
 
@@ -18,7 +22,7 @@ app.set('view engine', 'pug');
 app.use(bodyParser.json());
 app.use(
   fileUpload({
-    limits: { fileSize: 50 * 1024 * 1024 }
+    limits: { fileSize: 4 * 1024 * 1024 },
   })
 );
 

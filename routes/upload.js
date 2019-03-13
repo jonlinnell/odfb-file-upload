@@ -5,6 +5,8 @@ const debug = require('../helpers/debugMessages');
 
 const { put, get } = require('../helpers/api');
 
+const { UPLOAD_TARGET } = process.env;
+
 router.post('/file', (req, res) => {
   const { parentId } = req.body;
   const { name, mimetype, data } = req.files.file;
@@ -15,9 +17,7 @@ router.post('/file', (req, res) => {
 
   get(`/me/drive/root/children`)
     .then(response => {
-      const uploadDirectory = response.value.filter(item => item.name === 'upload_test')[0];
-
-      console.log(uploadDirectory)
+      const uploadDirectory = response.value.filter(item => item.name === UPLOAD_TARGET)[0];
 
       if (uploadDirectory.length === 0) {
         res.status(500).send('Upload directory does not exist');
@@ -41,7 +41,6 @@ router.post('/file', (req, res) => {
     })
     .catch(listError => {
       debug("Couldn't get directory listing.");
-      console.log(listError);
       res.status(500).send(listError);
     });
 });
