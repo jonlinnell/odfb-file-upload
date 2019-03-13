@@ -113,8 +113,6 @@ const put = (endpoint, options, data) =>
         const request = `${api}${endpoint}`;
         const headers = { authorization: `Bearer ${token}`, ...options.headers };
 
-        debug(`Doing ${request}, with data ${data.toString().slice(0, 32)}, with headers ${JSON.stringify(headers)}`);
-        
         axios
           .put(request, data, {
             headers,
