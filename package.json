@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=development nodemon index.js",
-    "lint": "eslint *.js helpers routes"
+    "lint": "eslint *.js helpers routes",
+    "client:lint": "eslint --ext=.js --ext=.jsx client",
+    "client:start": "parcel serve client/src/index.html"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +25,8 @@
     "moment-timezone": "^0.5.23",
     "pug": "^2.0.3",
     "querystringify": "^2.1.0",
-    "string-hash": "^1.1.3"
+    "string-hash": "^1.1.3",
+    "styled": "^1.0.0"
   },
   "devDependencies": {
     "eslint": "^5.15.0",
@@ -32,6 +35,9 @@
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-prettier": "^3.0.1",
     "nodemon": "^1.18.10",
-    "prettier": "^1.16.4"
+    "parcel-bundler": "^1.12.1",
+    "prettier": "^1.16.4",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
   }
 }

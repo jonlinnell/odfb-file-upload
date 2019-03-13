@@ -3,3 +3,5 @@ node_modules
 .token
 .refreshToken
 .DS_Store
+.cache
+dist
