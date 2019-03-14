@@ -1,10 +1,15 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-const Test = () => (
-  <div>
-    <h2>Test</h2>
-  </div>
+import GlobalStyle from './styles/GlobalStyle';
+
+import UploadView from './views/Upload';
+
+const App = () => (
+  <React.Fragment>
+    <GlobalStyle />
+    <UploadView />
+  </React.Fragment>
 )
 
-render(<Test />, document.getElementById('root'));
+render(<App />, document.getElementById('root'));

@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const fs = require('fs');
 
 const debug = require('../helpers/debugMessages');
 
@@ -8,45 +7,59 @@ const { put, get } = require('../helpers/api');
 const { UPLOAD_TARGET } = process.env;
 
 router.post('/file', (req, res) => {
-  const { parentId } = req.body;
-  const { name, mimetype, truncated, data } = req.files.file;
-
-  if (!name) {
-    res.status(400).send('No file specified.');
+  if (Object.keys(req.files).length === 0) {
+    res.status(400).send('No files were uploaded.');
+    return;
   }
 
-  if (truncated) {
-    res.status(400).send('File too large to be uploaded.');
-  } else {
-    get(`/me/drive/root/children`)
-      .then(response => {
-        const uploadDirectory = response.value.filter(item => item.name === UPLOAD_TARGET)[0];
+  get(`/me/drive/root/children`)
+    .then(childrenResponse => {
+      const uploadDirectory = childrenResponse.value.filter(item => item.name === UPLOAD_TARGET)[0];
 
-        if (uploadDirectory.length === 0) {
-          res.status(500).send('Upload directory does not exist');
-        } else {
+      if (uploadDirectory.length === 0) {
+        res.status(500).send('Upload directory does not exist');
+        return;
+      }
+
+      if (req.files.file.length > 0) {
+        const uploads = req.files.file.map(({ name, mimetype, data }) =>
           put(
-            `/me/drive/items/${uploadDirectory.id}:/${name}:/content`,
+            `/me/drive/items/${uploadDirectory.id}:/${encodeURIComponent(name)}:/content`,
             {
               headers: { 'Content-Type': mimetype },
             },
             data
           )
-            .then(response => {
-              const { webUrl, size, file } = response;
-              res.json({ webUrl, size, file });
-            })
-            .catch(error => {
-              debug("Couldn't upload the file.");
-              res.status(500).send(error.response.data);
-            });
-        }
-      })
-      .catch(listError => {
-        debug("Couldn't get directory listing.");
-        res.status(500).send(listError);
-      });
-  }
+        );
+
+        Promise.all(uploads).then(values => {
+          res.json(values.map(({ webUrl, size, file }) => ({ webUrl, size, file })));
+        });
+      } else {
+        const { name, mimetype, truncated, data } = req.files.file;
+
+        put(
+          `/me/drive/items/${uploadDirectory.id}:/${encodeURIComponent(name)}:/content`,
+          {
+            headers: { 'Content-Type': mimetype },
+          },
+          data
+        )
+          .then(uploadResponse => {
+            const { webUrl, size, file } = uploadResponse;
+            res.json({ webUrl, size, file });
+          })
+          .catch(error => {
+            debug("Couldn't upload the file.");
+            res.status(500).json(error.response);
+            console.error(error);
+          });
+      }
+    })
+    .catch(listError => {
+      debug("Couldn't get directory listing.");
+      res.status(500).send(listError);
+    });
 });
 
 module.exports = router;

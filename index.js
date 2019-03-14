@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
+const cors = require('cors');
 
 const { get } = require('./helpers/api');
 
@@ -25,6 +26,7 @@ app.use(
     limits: { fileSize: 4 * 1024 * 1024 },
   })
 );
+app.use(cors({ origin: 'http://localhost:1234' }));
 
 app.use('/token', tokenRoute);
 app.use('/upload', uploadRoute);
