@@ -4,8 +4,6 @@ const Dropzone = styled.div`
   height: 320px;
   width: 320px;
 
-  max-width: 90vw;
-
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import Section from '../components/Section';
 import Dropzone from '../components/Dropzone';
-
+import ProgressRing from '../components/ProgressRing';
 import IconUpload from '../icons/IconUpload';
 
 const UploadView = () => {
@@ -23,13 +23,14 @@ const UploadView = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
-    <Section>
+    <Section style={{ position: 'relative', top: '-160px' }}>
       <div {...getRootProps()}>
         <input name="file" type="file" multiple {...getInputProps()} />
+        <ProgressRing percent={0} />
         <Dropzone isDragActive={isDragActive}>
-          <IconUpload width={48} />
-          <p>Drag files here to upload, or click here to select files...</p>
-        </Dropzone>
+            <IconUpload width={48} />
+            <p>Drag files here to upload, or click here to select files...</p>
+          </Dropzone>
       </div>
     </Section>
   );
