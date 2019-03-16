@@ -1,5 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+
+import uploadContext from '../context/uploadContext';
+
+const Container = styled.svg`
+  position: relative;
+  top: -160px;
+
+  height: 320px;
+  width: 320px;
+
+  pointer-events: none;
+`
 
 const Ring = styled.circle`
   stroke-width: 2px;
@@ -11,19 +23,17 @@ const Ring = styled.circle`
   transform-origin: 50% 50%;
 `;
 
-export default ({ percent=0 }) => {
+export default () => {
+  console.log('Rendering the ring, I guess');
+  const { percent } = useContext(uploadContext)
+
   const radius = 158;
   const circumference = radius * 2 * Math.PI;
   const offset = circumference - percent / 100 * circumference;
 
   return (
-    <svg
-      height={320}
-      width={320}
-      style={{ position: 'relative', top: '320px' }}
-    >
+    <Container>
       <Ring
-        className="progress__ring"
         stroke="#ffffff"
         r={158}
         cx={160}
@@ -32,6 +42,6 @@ export default ({ percent=0 }) => {
         offset={offset}
       >
       </Ring>
-    </svg>
+    </Container>
   )
 }

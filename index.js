@@ -3,13 +3,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
+const morgan = require('morgan');
 
 const { get } = require('./helpers/api');
 
 const tokenRoute = require('./routes/token');
 const uploadRoute = require('./routes/upload');
 
-const { PORT, UPLOAD_TARGET } = process.env;
+const { PORT, UPLOAD_TARGET, NODE_ENV } = process.env;
 
 if (!UPLOAD_TARGET) {
   throw new Error('UPLOAD_TARGET is not defined in .env.');
@@ -27,6 +28,9 @@ app.use(
   })
 );
 app.use(cors({ origin: 'http://localhost:1234' }));
+if (NODE_ENV === 'development') {
+  app.use(morgan('combined'));
+}
 
 app.use('/token', tokenRoute);
 app.use('/upload', uploadRoute);

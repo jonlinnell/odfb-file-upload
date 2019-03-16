@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 
 const Dropzone = styled.div`
+  position: relative;
+  top: 160px;
+
   height: 320px;
   width: 320px;
 
