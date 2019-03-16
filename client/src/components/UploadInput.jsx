@@ -10,14 +10,12 @@ import uploadContext from '../context/uploadContext';
 export default () => {
   const { setPercentFromProgress } = useContext(uploadContext);
 
-  console.log('rendering, apparently')
-
   const onDrop = useCallback(acceptedFiles => {
     let fd = new FormData();
 
     acceptedFiles.map(file => fd.append('file', file));
 
-    axios.post('http://localhost:3000/upload/file', fd, {
+    axios.post('http://localhost:3000/upload/fileDummy', fd, {
       headers: { 'Content-Type': 'multipart/form-data' },
       onUploadProgress: setPercentFromProgress,
     });

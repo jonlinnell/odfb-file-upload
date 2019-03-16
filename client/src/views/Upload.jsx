@@ -6,10 +6,16 @@ import UploadInput from '../components/UploadInput';
 
 const UploadView = () => {
   return (
-    <Section>
+    <>
+    <Section style={{ marginBottom: '32px' }}>
+      <h1>Venture Crawl '19 Photos</h1>
+      <aside>Share your photos from VC19!</aside>
+    </Section>
+    <Section height={320}>
       <UploadInput />
       <ProgressRing />
     </Section>
+    </>
   );
 };
 

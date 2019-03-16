@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=development nodemon --ignore client/ index.js",
+    "start": "NODE_ENV=development nodemon --ignore client index.js",
     "lint": "eslint *.js helpers routes",
     "client:lint": "eslint --ext=.js --ext=.jsx client",
     "client:start": "parcel serve client/src/index.html"

@@ -6,6 +6,10 @@ const { put, get } = require('../helpers/api');
 
 const { UPLOAD_TARGET } = process.env;
 
+router.post('/fileDummy', (req, res) => {
+  res.send('Cheers luv');
+});
+
 router.post('/file', (req, res) => {
   if (Object.keys(req.files).length === 0) {
     res.status(400).send('No files were uploaded.');
