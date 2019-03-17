@@ -8,17 +8,26 @@ import IconUpload from '../icons/IconUpload';
 import uploadContext from '../context/uploadContext';
 
 export default () => {
-  const { setPercentFromProgress } = useContext(uploadContext);
+  const { setPercentFromProgress, setTransferStatus, setTransferSuccess } = useContext(uploadContext);
 
   const onDrop = useCallback(acceptedFiles => {
     let fd = new FormData();
 
     acceptedFiles.map(file => fd.append('file', file));
 
+    setTransferStatus('active');
+
     axios.post('http://localhost:3000/upload/fileDummy', fd, {
       headers: { 'Content-Type': 'multipart/form-data' },
       onUploadProgress: setPercentFromProgress,
-    });
+    })
+    .then(response => {
+      console.log(response)
+      setTransferSuccess();
+    }).catch(error => {
+      console.log(error);
+      setTransferStatus('error');
+    })
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });

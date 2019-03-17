@@ -3,6 +3,16 @@ import styled from 'styled-components';
 
 import uploadContext from '../context/uploadContext';
 
+const getColourFromStatus = status => {
+  if (status === 'active' || status === 'idle') {
+    return '#EAEAEA';
+  } else if (status === 'success') {
+    return '#008466';
+  } else if (status === 'error') {
+    return '#EE2F4F';
+  }
+};
+
 const Container = styled.svg`
   position: relative;
   top: -320px;
@@ -11,14 +21,15 @@ const Container = styled.svg`
   width: 320px;
 
   pointer-events: none;
-`
+`;
 
 const Ring = styled.circle`
+  fill: transparent;
+
+  stroke: ${({ transferStatus }) => getColourFromStatus(transferStatus)};
   stroke-width: 2px;
   stroke-dasharray: ${({ circumference }) => `${circumference} ${circumference}`};
   stroke-dashoffset: ${({ offset }) => offset};
-  fill: transparent;
-  stroke: ${({ percent }) => ( percent === 100 ? "#008466" : "#ffffff" )};
 
   transition: all 0.35s;
 
@@ -27,13 +38,11 @@ const Ring = styled.circle`
 `;
 
 export default () => {
-  const { percent } = useContext(uploadContext)
+  const { percent, transferStatus } = useContext(uploadContext);
 
   const radius = 158;
   const circumference = radius * 2 * Math.PI;
-  const offset = circumference - percent / 100 * circumference;
-
-  console.log(typeof percent)
+  const offset = circumference - (percent / 100) * circumference;
 
   return (
     <Container>
@@ -43,9 +52,8 @@ export default () => {
         cy={160}
         circumference={circumference}
         offset={offset}
-        percent={percent}
-      >
-      </Ring>
+        transferStatus={transferStatus}
+      />
     </Container>
-  )
-}
+  );
+};
