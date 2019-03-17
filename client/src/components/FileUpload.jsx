@@ -21,16 +21,16 @@ const UploadContainer = styled.div`
 `;
 
 export default () => {
-  const { setPercentFromProgress, setTransferStatus, setTransferSuccess } = useContext(
+  const { setPercentFromProgress, setTransferActive, setTransferError, setTransferSuccess, resetTransfer } = useContext(
     uploadContext
   );
 
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
     let fd = new FormData();
 
     acceptedFiles.forEach(file => fd.append('file', file));
 
-    setTransferStatus('active');
+    setTransferActive();
 
     if (acceptedFiles.length > 0) {
       axios
@@ -39,13 +39,15 @@ export default () => {
           onUploadProgress: setPercentFromProgress,
         })
         .then(response => {
-          console.log(response);
-          setTransferSuccess();
+          setTransferSuccess(response);
+          setTimeout(resetTransfer, 4000);
         })
         .catch(error => {
-          console.log(error);
-          setTransferStatus('error');
+          setTransferError(error);
         });
+    } else if (rejectedFiles.length > 0) {
+      setTransferError('Images only!');
+      setTimeout(resetTransfer, 4000);
     }
   }, []);
 
