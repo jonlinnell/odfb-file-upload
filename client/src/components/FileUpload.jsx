@@ -1,10 +1,10 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import styled from 'styled-components';
 
 import Dropzone from './Dropzone';
-import IconUpload from '../icons/IconUpload';
+import DropzoneContents from './DropzoneContents';
 import ProgressRing from './ProgressRing';
 
 import uploadContext from '../context/uploadContext';
@@ -21,11 +21,17 @@ const UploadContainer = styled.div`
 `;
 
 export default () => {
-  const { setPercentFromProgress, setTransferActive, setTransferError, setTransferSuccess, resetTransfer } = useContext(
-    uploadContext
-  );
+  const {
+    setPercentFromProgress,
+    setTransferActive,
+    setTransferError,
+    setTransferSuccess,
+    resetTransfer,
+  } = useContext(uploadContext);
 
   const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
+    resetTransfer();
+    
     let fd = new FormData();
 
     acceptedFiles.forEach(file => fd.append('file', file));
@@ -40,7 +46,7 @@ export default () => {
         })
         .then(response => {
           setTransferSuccess(response);
-          setTimeout(resetTransfer, 4000);
+          setTimeout(resetTransfer, 1000);
         })
         .catch(error => {
           setTransferError(error);
@@ -66,8 +72,7 @@ export default () => {
           multiple: true,
         })}
       />
-      <IconUpload width={48} />
-      <p>Drag files here to upload, or click here to select files...</p>
+      <DropzoneContents />
     </Dropzone>
     <ProgressRing />
     </UploadContainer>

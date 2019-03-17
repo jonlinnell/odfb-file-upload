@@ -61,7 +61,7 @@ export default () => {
         cx={160}
         cy={160}
         circumference={circumference}
-        offset={offset}
+        offset={offset || 0}
         transferStatus={transferStatus}
       />
     </Container>

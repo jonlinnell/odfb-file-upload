@@ -11,7 +11,8 @@ const uploadContext = createContext();
 
 const UploadProvider = ({ children }) => {
   const [percent, setPercent] = useState(0);
-  const [transferStatus, dispatch] = useReducer((state, action) => {
+  const [statusText, setStatusText] = useState('');
+  const [transferStatus, dispatchStatus] = useReducer((state, action) => {
     switch (action.type) {
       case STATUS_IDLE:
         return STATUS_IDLE;
@@ -29,37 +30,42 @@ const UploadProvider = ({ children }) => {
   }, STATUS_IDLE);
 
   const resetTransfer = () => {
-    dispatch({ type: STATUS_RESETTING });
+    dispatchStatus({ type: STATUS_RESETTING });
     setTimeout(() => {
       setPercent(0)
-      setTimeout(() => dispatch({ type: STATUS_IDLE }), 500);
-    }, 500)
+      setStatusText('')
+      setTimeout(() => dispatchStatus({ type: STATUS_IDLE }), 350);
+    }, 350)
   };
 
-  const setPercentFromProgress = progressEvent =>
+  const setPercentFromProgress = progressEvent => {
     setPercent(parseInt(Math.round((progressEvent.loaded * 100) / progressEvent.total)));
+  }
 
-  const setTransferActive = () => dispatch({ type: STATUS_ACTIVE });
+  const setTransferActive = () => dispatchStatus({ type: STATUS_ACTIVE });
 
   const setTransferError = error => {
     setPercent(100);
-    dispatch({ type: STATUS_ERROR });
+    dispatchStatus({ type: STATUS_ERROR });
+    setStatusText(JSON.stringify(error));
   };
 
   const setTransferSuccess = response => {
-    dispatch({ type: STATUS_SUCCESS });
+    dispatchStatus({ type: STATUS_SUCCESS });
+    setStatusText(JSON.stringify(response.body));
   };
 
   return (
     <uploadContext.Provider
       value={{
         percent,
-        transferStatus,
+        resetTransfer,
+        setPercentFromProgress,
         setTransferActive,
         setTransferError,
         setTransferSuccess,
-        setPercentFromProgress,
-        resetTransfer,
+        statusText,
+        transferStatus,
       }}
     >
       {children}
