@@ -10,6 +10,8 @@ const GlobalStyle = createGlobalStyle`
 
   *, *::after, *::before {
     box-sizing: inherit;
+
+    margin: 0 !important;
   }
 
   body {

@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 
 const Dropzone = styled.div`
+  position: absolute;
+  top: 0;
+
   height: 320px;
   width: 320px;
 
@@ -18,9 +21,9 @@ const Dropzone = styled.div`
 
   background: ${({ isDragActive }) => (isDragActive ?  '#6F3092' : 'none')};
   transition-property: all;
-  transition-duration: 0.5s;
+  transition-duration: 0.35s;
 
-  &::focus {
+  &:focus {
     outline: none;
   }
 `;

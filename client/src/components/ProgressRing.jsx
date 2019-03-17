@@ -14,8 +14,8 @@ const getColourFromStatus = status => {
 };
 
 const Container = styled.svg`
-  position: relative;
-  top: -320px;
+  position: absolute;
+  top: 0;
 
   height: 320px;
   width: 320px;
