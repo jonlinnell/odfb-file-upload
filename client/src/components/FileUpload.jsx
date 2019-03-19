@@ -9,6 +9,8 @@ import ProgressRing from './ProgressRing';
 
 import uploadContext from '../context/uploadContext';
 
+const { API } = process.env;
+
 const maxSize = 4 * 1024 ** 2;
 
 const UploadContainer = styled.div`
@@ -50,7 +52,7 @@ export default () => {
       source = CancelToken.source()
 
       axios
-        .post('http://localhost:3000/upload/file', fd, {
+        .post(`${API}/upload/file`, fd, {
           headers: { 'Content-Type': 'multipart/form-data' },
           onUploadProgress: setPercentFromProgress,
           cancelToken: source.token
