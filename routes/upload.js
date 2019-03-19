@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const moment = require('moment');
 
 const debug = require('../helpers/debugMessages');
 
@@ -11,6 +12,8 @@ router.post('/fileDummy', (req, res) => {
 });
 
 router.post('/file', (req, res) => {
+  const datestamp = moment().format('YYYYMMDD HHmm');
+
   if (Object.keys(req.files).length === 0) {
     res.status(400).send('No files were uploaded.');
     return;
@@ -28,7 +31,7 @@ router.post('/file', (req, res) => {
       if (req.files.file.length > 0) {
         const uploads = req.files.file.map(({ name, mimetype, data }) =>
           put(
-            `/me/drive/items/${uploadDirectory.id}:/${encodeURIComponent(name)}:/content`,
+            `/me/drive/items/${uploadDirectory.id}:/${datestamp} - ${encodeURIComponent(name)}:/content`,
             {
               headers: { 'Content-Type': mimetype },
             },
@@ -41,9 +44,8 @@ router.post('/file', (req, res) => {
         });
       } else {
         const { name, mimetype, truncated, data } = req.files.file;
-
         put(
-          `/me/drive/items/${uploadDirectory.id}:/${encodeURIComponent(name)}:/content`,
+          `/me/drive/items/${uploadDirectory.id}:/${datestamp} - ${encodeURIComponent(name)}:/content`,
           {
             headers: { 'Content-Type': mimetype },
           },
