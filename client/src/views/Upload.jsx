@@ -23,8 +23,7 @@ const UploadView = () => {
       <h1>Venture Crawl 2019 Photos</h1>
       <aside>Share your photos from VC19!</aside>
     </Section>
-    <FileUpload disabled={!consent} />
-    <Section style={{ marginTop: '7vh' }}>
+    <Section style={{ marginBottom: '7vh' }}>
       <ConsentHeader>Ts & Cs</ConsentHeader>
         <ConsentAside>By uploading photos, you agree to the following terms:</ConsentAside>
         <ConsentTermsList>
@@ -38,6 +37,7 @@ const UploadView = () => {
           <ConsentLabel style={{ marginLeft: '12px' }} htmlFor='consent'>I consent to the Terms & Conditions</ConsentLabel>
         </div>
     </Section>
+    <FileUpload />
     <Section style={{ marginTop: '7vh' }}>
       <LboroLogo width={180} fill="#FFFFFF" />
       <Footer>2019 Jon Linnell, Loughborough University London</Footer>
