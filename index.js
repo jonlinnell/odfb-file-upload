@@ -4,16 +4,34 @@ const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const morgan = require('morgan');
+const fs = require('fs');
+const https = require('https');
 
 const { get } = require('./helpers/api');
 
 const tokenRoute = require('./routes/token');
 const uploadRoute = require('./routes/upload');
 
-const { PORT, UPLOAD_TARGET, NODE_ENV } = process.env;
+const { PORT, NODE_ENV, DISABLE_HTTPS, HTTPS_KEY, HTTPS_CERT, ALLOWED_ORIGINS } = process.env;
 
-if (!UPLOAD_TARGET) {
-  throw new Error('UPLOAD_TARGET is not defined in .env.');
+[
+  'HOST',
+  'PORT',
+  'UPLOAD_TARGET',
+  'NODE_ENV',
+  'CLIENT_ID',
+  'CLIENT_SECRET',
+  'ALLOWED_ORIGINS',
+].forEach(option => {
+  if (Object.keys(process.env).indexOf(option) === -1) {
+    throw new Error(`Missing required environment variable: ${option}.\nPlease see .env.example.`);
+  }
+});
+
+if (!DISABLE_HTTPS && (!HTTPS_CERT || !HTTPS_KEY)) {
+  throw new Error(
+    'HTTPS is enabled, but a key and/or certificate file are not specified.\nPlease see .env.example.'
+  );
 }
 
 const app = express();
@@ -27,7 +45,11 @@ app.use(
     limits: { fileSize: 4 * 1024 * 1024 },
   })
 );
-app.use(cors({ origin: 'http://localhost:1234' }));
+app.use(
+  cors({
+    origin: ALLOWED_ORIGINS,
+  })
+);
 if (NODE_ENV === 'development') {
   app.use(morgan('combined'));
 }
@@ -45,5 +67,16 @@ app.get('/me', (req, res) => {
     });
 });
 
-// eslint-disable-next-line no-console
-app.listen(PORT, () => console.log(`Listening on ${PORT}...`));
+if (DISABLE_HTTPS) {
+  app.listen(PORT, () => console.log(`Listening on ${PORT}...`));
+} else {
+  https
+    .createServer(
+      {
+        key: fs.readFileSync(HTTPS_KEY),
+        cert: fs.readFileSync(HTTPS_CERT),
+      },
+      app
+    )
+    .listen(PORT);
+}
