@@ -6,7 +6,7 @@ const fetchToken = require('../helpers/fetchToken');
 
 const state = crypto.randomBytes(64).toString('hex');
 
-const { CLIENT_ID, HOST, PORT, DISABLE_SSL } = process.env;
+const { CLIENT_ID, HOST, PORT, DISABLE_HTTPS } = process.env;
 
 const router = Router();
 
@@ -14,7 +14,7 @@ router.get('/initialiseAuthorisationFlow', (req, res) => {
   const query = qs.stringify({
     client_id: CLIENT_ID,
     response_type: 'code',
-    redirect_uri: `http${DISABLE_SSL ? '' : 's'}://${HOST}:${PORT}/token/receive_code`,
+    redirect_uri: `http${DISABLE_HTTPS ? '' : 's'}://${HOST}:${PORT}/token/receive_code`,
     response_mode: 'query',
     scope: 'offline_access User.Read Files.ReadWrite Files.ReadWrite.All Sites.ReadWrite.All',
     state,
