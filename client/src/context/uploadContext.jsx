@@ -29,13 +29,17 @@ const UploadProvider = ({ children }) => {
     }
   }, STATUS_IDLE);
 
-  const resetTransfer = () => {
-    dispatchStatus({ type: STATUS_RESETTING });
-    setTimeout(() => {
-      setPercent(0)
-      setStatusText('')
-      setTimeout(() => dispatchStatus({ type: STATUS_IDLE }), 350);
-    }, 350)
+  const resetTransfer = (noAnimation) => {
+    if (noAnimation) {
+      dispatchStatus({ type: STATUS_IDLE });
+    } else {
+      dispatchStatus({ type: STATUS_RESETTING });
+      setTimeout(() => {
+        setPercent(0)
+        setStatusText('')
+        setTimeout(() => dispatchStatus({ type: STATUS_IDLE }), 350);
+      }, 350)
+    }
   };
 
   const setPercentFromProgress = progressEvent => {

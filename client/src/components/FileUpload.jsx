@@ -30,8 +30,6 @@ export default () => {
   } = useContext(uploadContext);
 
   const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
-    resetTransfer();
-    
     let fd = new FormData();
 
     acceptedFiles.forEach(file => fd.append('file', file));
@@ -40,13 +38,13 @@ export default () => {
 
     if (acceptedFiles.length > 0) {
       axios
-        .post('http://localhost:3000/upload/fileDummy', fd, {
+        .post('http://localhost:3000/upload/file', fd, {
           headers: { 'Content-Type': 'multipart/form-data' },
           onUploadProgress: setPercentFromProgress,
         })
         .then(response => {
           setTransferSuccess(response);
-          setTimeout(resetTransfer, 1000);
+          setTimeout(resetTransfer, 4000);
         })
         .catch(error => {
           setTransferError(error);
