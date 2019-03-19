@@ -8,7 +8,8 @@ import DropzoneContents from './DropzoneContents';
 import ProgressRing from './ProgressRing';
 
 import uploadContext from '../context/uploadContext';
-import { STATUS_IDLE } from '../constants/uploadStatuses';
+
+const maxSize = 4 * 1024 ** 2;
 
 const UploadContainer = styled.div`
   position: relative;
@@ -30,39 +31,54 @@ export default () => {
     setTransferError,
     setTransferSuccess,
     resetTransfer,
-    transferState
   } = useContext(uploadContext);
+
+  let source;
 
   const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
     let fd = new FormData();
-
     acceptedFiles.forEach(file => fd.append('file', file));
 
-    setTransferActive();
+    const CancelToken = axios.CancelToken;
 
     if (acceptedFiles.length > 0) {
+      if (source) {
+        source.cancel('New upload started.');
+      }
+
+      setTimeout(() => setTransferActive(), 500);
+      source = CancelToken.source()
+
       axios
         .post('http://localhost:3000/upload/file', fd, {
           headers: { 'Content-Type': 'multipart/form-data' },
           onUploadProgress: setPercentFromProgress,
+          cancelToken: source.token
         })
         .then(response => {
           setTransferSuccess(response);
           setTimeout(resetTransfer, 4000);
+          source = undefined;
         })
         .catch(error => {
-          setTransferError(error);
+          if (axios.isCancel(error)) {
+            resetTransfer(true);
+          } else {
+            setTransferError(error);
+          }
         });
     } else if (rejectedFiles.length > 0) {
-      setTransferError(`One or more files can't be uploaded. Make sure your photos are PNG or JPEG files, and are no larger than 4mb.`);
-      setTimeout(resetTransfer, 4000);
+      if (!source) {
+        setTransferError(`One or more files can't be uploaded. Make sure your photos are PNG or JPEG files, and are no larger than ${maxSize / 1024 ** 2}mb.`);
+        setTimeout(resetTransfer, 4000);
+      }
     }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: 'image/jpeg, image/png',
-    maxSize: 4 * 1024 * 1024,
+    maxSize
   });
 
   return (
