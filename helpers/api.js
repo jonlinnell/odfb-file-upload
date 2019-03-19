@@ -7,7 +7,7 @@ const cache = require('memory-cache');
 
 const paths = require('../paths');
 
-const { HOST, PORT } = process.env;
+const { HOST, PORT, DISABLE_HTTPS } = process.env;
 
 const debug = require('./debugMessages');
 const fetchToken = require('./fetchToken');
@@ -21,7 +21,9 @@ const getToken = () =>
       debug(`Couldn't locate the token file: ${paths.token}`);
       reject(
         new Error(
-          `No saved token.\nPlease reinitialise authorisation by going to http://${HOST}:${PORT}/token/initialiseAuthorisationFlow .`
+          `No saved token.\nPlease reinitialise authorisation by going to http${
+            DISABLE_HTTPS ? '' : 's'
+          }://${HOST}:${PORT}/token/initialiseAuthorisationFlow .`
         )
       );
     } else {
@@ -42,7 +44,9 @@ const getToken = () =>
           debug(`No refresh token found. File ${paths.refreshToken} doesn't exist.`);
           reject(
             new Error(
-              `No saved refresh token.\nPlease reinitialise authorisation by going to http://${HOST}:${PORT}/token/initialiseAuthorisationFlow .`
+              `No saved refresh token.\nPlease reinitialise authorisation by going to http${
+                DISABLE_HTTPS ? '' : 's'
+              }://${HOST}:${PORT}/token/initialiseAuthorisationFlow .`
             )
           );
         } else {
@@ -53,7 +57,9 @@ const getToken = () =>
             debug('Refresh token is empty.');
             reject(
               new Error(
-                `Token has expired and there is no refresh token available.\nPlease reinitialise authorisation by going to http://${HOST}:${PORT}/token/initialiseAuthorisationFlow .`
+                `Token has expired and there is no refresh token available.\nPlease reinitialise authorisation by going to http${
+                  DISABLE_HTTPS ? '' : 's'
+                }://${HOST}:${PORT}/token/initialiseAuthorisationFlow .`
               )
             );
           } else {

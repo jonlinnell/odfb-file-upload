@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const debug = require('./debugMessages');
 
-const { CLIENT_ID, CLIENT_SECRET, HOST, PORT } = process.env;
+const { CLIENT_ID, CLIENT_SECRET, HOST, PORT, DISABLE_HTTPS } = process.env;
 const tokenEndpoint = 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
 
 const config = {
@@ -17,7 +17,7 @@ const requestBody = {
   client_id: CLIENT_ID,
   client_secret: CLIENT_SECRET,
   scope: 'user.read calendars.read.shared',
-  redirect_uri: `http://${HOST}:${PORT}/token/receive_code`,
+  redirect_uri: `http${DISABLE_HTTPS ? '' : 's'}://${HOST}:${PORT}/token/receive_code`,
 };
 
 const writeToken = token => fs.writeFileSync(`${__dirname}/../.token`, token, 'utf8');
