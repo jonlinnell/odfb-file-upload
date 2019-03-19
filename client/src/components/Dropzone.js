@@ -17,8 +17,6 @@ const Dropzone = styled.div`
 
   text-align: center;
 
-  padding: 12px 48px;
-
   background: ${({ isDragActive }) => (isDragActive ?  '#6F3092' : 'none')};
   transition-property: all;
   transition-duration: 0.35s;

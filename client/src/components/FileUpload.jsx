@@ -8,11 +8,14 @@ import DropzoneContents from './DropzoneContents';
 import ProgressRing from './ProgressRing';
 
 import uploadContext from '../context/uploadContext';
+import { STATUS_IDLE } from '../constants/uploadStatuses';
 
 const UploadContainer = styled.div`
   position: relative;
 
   height: 320px;
+
+  padding: 12px 48px;
 
   display: flex;
   flex-direction: row;
@@ -27,6 +30,7 @@ export default () => {
     setTransferError,
     setTransferSuccess,
     resetTransfer,
+    transferState
   } = useContext(uploadContext);
 
   const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
@@ -50,7 +54,7 @@ export default () => {
           setTransferError(error);
         });
     } else if (rejectedFiles.length > 0) {
-      setTransferError('Images only!');
+      setTransferError(`One or more files can't be uploaded. Make sure your photos are PNG or JPEG files, and are no larger than 4mb.`);
       setTimeout(resetTransfer, 4000);
     }
   }, []);
@@ -58,6 +62,7 @@ export default () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: 'image/jpeg, image/png',
+    maxSize: 4 * 1024 * 1024,
   });
 
   return (

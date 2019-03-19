@@ -16,20 +16,29 @@ import {
   STATUS_RESETTING,
 } from '../constants/uploadStatuses.js';
 
+const commonStyles = {
+  position: 'absolute',
+  padding: '12px 32px',
+}
+
+const Status = styled.p`
+  margin-top: 12px;
+`
+
 const DropzoneContents = () => {
   const { transferStatus, statusText } = useContext(uploadContext);
 
   const text = {
-    STATUS_IDLE: <IconUpload />,
+    STATUS_IDLE: <><IconUpload /><br /><Status>Drag images here to upload, or click to select files.</Status></>,
     STATUS_ACTIVE: 'Uploading...',
     STATUS_SUCCESS: <IconSuccess />,
-    STATUS_ERROR: <><IconError /><br />{statusText}</>,
+    STATUS_ERROR: <><IconError /><br /><Status>{statusText}</Status></>,
   }
 
   const transitions = useTransition(transferStatus, transferStatus, {
-    from: { opacity: 0, position: 'absolute' },
-    enter: { opacity: 1, position: 'absolute' },
-    leave: { opacity: 0, position: 'absolute' },
+    from: { opacity: 0, ...commonStyles },
+    enter: { opacity: 1, ...commonStyles },
+    leave: { opacity: 0, ...commonStyles },
     unique: true,
   })
 
