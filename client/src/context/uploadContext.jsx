@@ -12,6 +12,7 @@ const uploadContext = createContext();
 const UploadProvider = ({ children }) => {
   const [percent, setPercent] = useState(0);
   const [statusText, setStatusText] = useState('');
+  const [consent, setConsent] = useState(false);
   const [transferStatus, dispatchStatus] = useReducer((state, action) => {
     switch (action.type) {
       case STATUS_IDLE:
@@ -70,6 +71,8 @@ const UploadProvider = ({ children }) => {
         setTransferSuccess,
         statusText,
         transferStatus,
+        consent,
+        setConsent
       }}
     >
       {children}

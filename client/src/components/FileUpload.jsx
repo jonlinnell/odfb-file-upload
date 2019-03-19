@@ -33,6 +33,7 @@ export default () => {
     setTransferError,
     setTransferSuccess,
     resetTransfer,
+    consent
   } = useContext(uploadContext);
 
   let source;
@@ -43,7 +44,10 @@ export default () => {
 
     const CancelToken = axios.CancelToken;
 
-    if (acceptedFiles.length > 0) {
+    if (!consent) {
+      setTransferError('Please agree to the Ts & Cs below.');
+      setTimeout(resetTransfer, 4000);
+    } else if (acceptedFiles.length > 0) {
       if (source) {
         source.cancel('New upload started.');
       }
@@ -67,6 +71,7 @@ export default () => {
             resetTransfer(true);
           } else {
             setTransferError(error);
+            setTimeout(resetTransfer, 4000);
           }
         });
     } else if (rejectedFiles.length > 0) {
@@ -75,7 +80,7 @@ export default () => {
         setTimeout(resetTransfer, 4000);
       }
     }
-  }, []);
+  }, [consent]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
